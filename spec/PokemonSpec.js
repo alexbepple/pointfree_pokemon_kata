@@ -44,12 +44,7 @@ const debug = curry((title, value) => {
 
 const normalPokemon = R.propEq('type', 'Normal')
 
-const findDistanceToClosestNormal = (position) => R.pipe(
-    findClosestNormalTo(position),
-    R.prop('distanceToPlayer')
-)
-
-const findClosestNormalTo = (position) => R.transduce(
+const findClosestTo = (position, predicate) => R.transduce(
     R.compose(
         R.filter(normalPokemon),
         R.map((mon) => R.assoc('distanceToPlayer', distance(position, mon.position), mon))
@@ -58,22 +53,15 @@ const findClosestNormalTo = (position) => R.transduce(
     {distanceToPlayer: Infinity}
 )
 
-const findNameOfClosestNormalTo = (position) => R.pipe(
-    findClosestNormalTo(position),
-    R.prop('name')
-)
-
-describe("Pokemon-Kata" , () => {
+describe("Pokemon finder" , () => {
   it("should find the distance to the closest Normal pokemon", () => {
-      expect(
-          findDistanceToClosestNormal(playerPosition)(mons)
-      ).toBeCloseTo(21.9, 1);
+      let closestNormal = findClosestTo(playerPosition, normalPokemon)(mons)
+      expect(closestNormal.distanceToPlayer).toBeCloseTo(21.9, 1);
   });
 
   it("should find the name of the nearest Pokemon", () => {
-      expect(
-          findNameOfClosestNormalTo(playerPosition)(mons)
-      ).toEqual("Mewtwo")
+      let closestNormal = findClosestTo(playerPosition, normalPokemon)(mons)
+      expect(closestNormal.name).toEqual("Mewtwo")
   });
 
 });
