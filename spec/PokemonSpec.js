@@ -42,18 +42,25 @@ const debug = curry((title, value) => {
   return value;
 })
 
-const findDistanceToClosestNormal = (position) => R.pipe(
-    R.filter(R.propEq('type', 'Normal')),
-    R.pluck('position'),
-    R.map(distance(position)),
-    R.reduce(R.min, Infinity)
+const findDistanceToClosestNormal = (position) => R.transduce(
+    R.compose(
+        R.filter(R.propEq('type', 'Normal')),
+        R.pluck('position'),
+        R.map(distance(position))
+    ),
+    R.min,
+    Infinity
 )
 
-
 const findNameOfClosestNormalTo = (position) => R.pipe(
-    R.filter(R.propEq('type', 'Normal')),
-    R.map((mon) => R.assoc('distanceToPlayer', distance(position, mon.position), mon)),
-    R.reduce(R.minBy(R.prop('distanceToPlayer')), {distanceToPlayer: Infinity}),
+    R.transduce(
+        R.compose(
+            R.filter(R.propEq('type', 'Normal')),
+            R.map((mon) => R.assoc('distanceToPlayer', distance(position, mon.position), mon))
+        ),
+        R.minBy(R.prop('distanceToPlayer')), 
+        {distanceToPlayer: Infinity}
+    ),
     R.prop('name')
 )
 
