@@ -54,12 +54,7 @@ const findClosestTo = (position, predicate) => R.transduce(
 )
 
 describe("Pokemon finder" , () => {
-  it("should find the distance to the closest Normal pokemon", () => {
-      let closestNormal = findClosestTo(playerPosition, normalPokemon)(mons)
-      expect(closestNormal.distanceToPlayer).toBeCloseTo(21.9, 1);
-  });
-
-  it("should find the name of the nearest Pokemon", () => {
+  it("finds the closest Pokemon by predicate", () => {
       let closestNormal = findClosestTo(playerPosition, normalPokemon)(mons)
       expect(closestNormal.name).toEqual("Mewtwo")
   });
